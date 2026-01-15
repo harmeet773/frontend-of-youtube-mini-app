@@ -1,0 +1,4 @@
+- [x] Add setBackendUrl reducer to harmeetsYoutubeSlice.js
+- [x] Export setBackendUrl action
+- [ ] Import useDispatch and setBackendUrl in CheckBackendConnectivity.jsx
+- [ ] Dispatch setBackendUrl when activeBackend is set
