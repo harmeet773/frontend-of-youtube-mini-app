@@ -1,12 +1,13 @@
 import { useSelector } from "react-redux";
 function CommentComponent({ comment, user, onDelete, videoId }) {
-
 const isUserAuthenticated = useSelector(
   state => state.harmeetsYoutube.isUserAuthenticated);  
+  console.log("comment component authentication ");
   if ( isUserAuthenticated)
   {
   const top = comment.snippet.topLevelComment.snippet;
   const id = comment.snippet.topLevelComment.id;
+  console.log("comment component authentication ");
   return (
     <div className="mb-4">
       <div className="d-flex gap-3">
