@@ -3,11 +3,12 @@ import { createSlice } from '@reduxjs/toolkit';
 const harmeetsYoutubeSlice = createSlice({
   name: 'harmeetsYoutube',
   initialState: {
-    videos: [],            
+    videos: [],
     user:[],
     isUserAuthenticated: false,
     currentVideo: null,
-    YT_BACKEND_URL:""   
+    YT_BACKEND_URL:"",
+    token: null
   },
   reducers: {
     setVideos: (state, action) => {
@@ -19,8 +20,12 @@ const harmeetsYoutubeSlice = createSlice({
     setBackendUrl: (state, action) => {
       state.YT_BACKEND_URL = action.payload;
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+      state.isUserAuthenticated = true;
+    },
   },
 });
 
-export const { setVideos, setCurrentVideo, setBackendUrl } = harmeetsYoutubeSlice.actions;
+export const { setVideos, setCurrentVideo, setBackendUrl, setToken } = harmeetsYoutubeSlice.actions;
 export default harmeetsYoutubeSlice.reducer;

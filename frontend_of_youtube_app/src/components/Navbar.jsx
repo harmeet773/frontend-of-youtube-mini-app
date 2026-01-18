@@ -1,7 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import GoogleLogin from "../auth/GoogleLogin";
+import Logout from "../auth/Logout";
 
 const Navbar = () => {
+  const token = useSelector((state) => state.harmeetsYoutube.token);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
@@ -22,7 +27,7 @@ const Navbar = () => {
         </button>
 
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav ms-auto">
+          <ul className="navbar-nav ms-auto"> 
             <li className="nav-item">
               <Link className="nav-link active" to="/">
                 Home
@@ -36,9 +41,7 @@ const Navbar = () => {
             </li>
 
             <li className="nav-item">
-              <Link className="nav-link" to="/auth">
-                Login
-              </Link>
+              {token ? <Logout /> : <GoogleLogin />}
             </li>
           </ul>
         </div>
