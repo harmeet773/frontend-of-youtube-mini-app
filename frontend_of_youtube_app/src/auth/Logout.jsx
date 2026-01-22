@@ -1,12 +1,12 @@
 import { useDispatch } from "react-redux";
-import { setToken } from "../features/harmeetsYoutubeSlice";
+import {  setLogout } from "../features/harmeetsYoutubeSlice";
 
 export default function Logout() {
   const dispatch = useDispatch();
 
   const handleLogout = () => {
     // Clear token from Redux store
-    dispatch(setToken(null));
+    dispatch(setLogout());
     // Optionally clear from localStorage/sessionStorage if you're storing it there too
     localStorage.removeItem('token');
     sessionStorage.removeItem('token');
@@ -14,3 +14,4 @@ export default function Logout() {
 
   return <button onClick={handleLogout}>Sign out</button>;
 }
+  

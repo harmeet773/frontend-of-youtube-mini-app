@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-function AddCommentForm({ user, onSubmit }) {
+function AddCommentForm({ UserProfilePhoto }) {
+
+
   const [text, setText] = useState("");
 
   function handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(); 
 
     if (!text.trim()) return;
     onSubmit(text);                
@@ -16,7 +18,7 @@ function AddCommentForm({ user, onSubmit }) {
   return (
     <form onSubmit={handleSubmit} className="mb-3">
       <div className="d-flex gap-2">
-        <img src={user.photos?.[0]?.value} className="small-avatar" />     
+        <img src={UserProfilePhoto} className="small-avatar" />     
         <textarea
           className="form-control"
           rows="3"

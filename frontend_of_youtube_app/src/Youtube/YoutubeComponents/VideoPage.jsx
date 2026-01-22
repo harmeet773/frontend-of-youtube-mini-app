@@ -6,12 +6,13 @@ import { useSelector } from "react-redux";
 
 export default function VideoPage(props) {
 const { videoId } = useParams();
+const UserProfilePhoto = useSelector(  (state) => state.harmeetsYoutube.user.picture   );
 
 
   return (
     <>   
       <VideoComponent videoId={videoId} />
-      <AddCommentForm />
+      <AddCommentForm UserProfilePhoto= {UserProfilePhoto  }    />
       <CommentComponent videoId={videoId} />
     </>
   );

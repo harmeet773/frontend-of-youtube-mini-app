@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import axiosInstance from "../api/axiosInstance";
 export default function HarmeetsYoutube() {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,14 +11,10 @@ export default function HarmeetsYoutube() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await fetch(`${BACKEND_URL}/youtube/channel-videos`); 
+        const response = await axiosInstance.get(`${BACKEND_URL}/youtube/channel-videos`); 
         console.log("here i am ",  `${BACKEND_URL}/youtube/channel-videos`)
-        if (!response.ok) {
-          throw new Error("Failed to fetch videos");
-        }
-        const data = await response.json();
-        if (data.success) {
-          setVideos(data.videos);
+        if (response.data.success) {
+          setVideos(response.data.videos);
         } else {
           throw new Error("API returned success: false");
         }

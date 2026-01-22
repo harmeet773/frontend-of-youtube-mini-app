@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axiosInstance from "../../../api/axiosInstance";
 import { useSelector } from "react-redux";
 
 export default function VideoComponent() {
@@ -18,7 +18,7 @@ export default function VideoComponent() {
 
     const fetchVideo = async () => {
       try {
-        const res = await axios.get(
+        const res = await axiosInstance.get(
           `${BACKEND_URL}/youtube/video/${videoId}`
         );
         setVideo(res.data.video);
@@ -39,48 +39,69 @@ export default function VideoComponent() {
   const { snippet, statistics, contentDetails } = video;
 
   return (
-    <div className="container py-4">
-      <div className="row">
-        <div className="col-md-8">
+    <div className="container-fluid px-4 py-3">
+      <div className="row justify-content-center">
+        <div className="col-lg-8">
 
           {/* ▶️ VIDEO PLAYER */}
-          <div className="card mb-3">
+          <div className="ratio ratio-16x9 rounded overflow-hidden mb-3">
             <iframe
-              height="420"
               src={`https://www.youtube.com/embed/${video.id}`}
               title={snippet.title}
               allowFullScreen
-              className="w-100"
             />
           </div>
 
           {/* 🧾 TITLE */}
-          <h4>{snippet.title}</h4>
+          <h5 className="fw-bold mb-2">{snippet.title}</h5>
 
-          {/* 📊 STATS */}
-          <p className="text-muted mb-1">
-            {formatNumber(statistics.viewCount)} views •{" "}
-            {new Date(snippet.publishedAt).toDateString()}
-          </p>
+          {/* 📊 META ROW */}
+          <div className="d-flex justify-content-between align-items-center flex-wrap mb-3">
+            <p className="text-muted mb-1">
+              {formatNumber(statistics.viewCount)} views •{" "}
+              {new Date(snippet.publishedAt).toDateString()}
+            </p>
 
-          <p className="mb-2">
-            👍 {formatNumber(statistics.likeCount)} likes • 💬{" "}
-            {formatNumber(statistics.commentCount)} comments
-          </p>
-
-          <hr />
-
-          {/* 📺 CHANNEL */}
-          <p className="fw-bold">{snippet.channelTitle}</p>
-
-          {/* 📝 DESCRIPTION */}
-          <p style={{ whiteSpace: "pre-line" }}>
-            {snippet.description || "No description available"}
-          </p>
+            <div className="d-flex gap-3">
+              <span>👍 {formatNumber(statistics.likeCount)}</span>
+              <span>💬 {formatNumber(statistics.commentCount)}</span>
+            </div>
+          </div>
 
           <hr />
 
-          {/* ⚙️ VIDEO META */}
+          {/* 📺 CHANNEL INFO */}
+          <div className="d-flex align-items-center gap-3 mb-3">
+            <div
+              className="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center"
+              style={{ width: 48, height: 48 }}
+            >
+              {snippet.channelTitle[0]}
+            </div>
+
+            <div className="flex-grow-1">
+              <p className="fw-bold mb-0">{snippet.channelTitle}</p>
+              <small className="text-muted">YouTube Channel</small>
+            </div>
+
+            <button className="btn btn-dark btn-sm rounded-pill px-3">
+              Subscribe
+            </button>
+          </div>
+
+          {/* 📝 DESCRIPTION BOX */}
+          <div className="bg-light rounded p-3 mb-4">
+            <p className="mb-2 text-muted">
+              {formatNumber(statistics.viewCount)} views •{" "}
+              {new Date(snippet.publishedAt).toDateString()}
+            </p>
+
+            <p style={{ whiteSpace: "pre-line" }} className="mb-0">
+              {snippet.description || "No description available"}
+            </p>
+          </div>
+
+          {/* ⚙️ VIDEO DETAILS */}
           <div className="row text-muted small">
             <div className="col-md-6">
               <p><strong>Duration:</strong> {formatDuration(contentDetails.duration)}</p>
@@ -92,24 +113,6 @@ export default function VideoComponent() {
               <p><strong>Captions:</strong> {contentDetails.caption === "true" ? "Yes" : "No"}</p>
               <p><strong>Licensed:</strong> {contentDetails.licensedContent ? "Yes" : "No"}</p>
               <p><strong>Category ID:</strong> {snippet.categoryId}</p>
-            </div>
-          </div>
-
-          <hr />
-
-          {/* 🖼️ THUMBNAILS */}
-          <div>
-            <p className="fw-bold mb-2">Thumbnails</p>
-            <div className="d-flex gap-2 flex-wrap">
-              {Object.values(snippet.thumbnails).map((thumb, i) => (
-                <img
-                  key={i}
-                  src={thumb.url}
-                  alt="thumbnail"
-                  height="90"
-                  className="rounded border"
-                />
-              ))}
             </div>
           </div>
 
@@ -126,7 +129,9 @@ function formatDuration(iso) {
   const h = match[1] || 0;
   const m = match[2] || 0;
   const s = match[3] || 0;
-  return [h && `${h}h`, m && `${m}m`, s && `${s}s`].filter(Boolean).join(" ");
+  return [h && `${h}h`, m && `${m}m`, s && `${s}s`]
+    .filter(Boolean)
+    .join(" ");
 }
 
 function formatNumber(n) {
