@@ -11,8 +11,8 @@ export default function HarmeetsYoutube() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axiosInstance.get(`${BACKEND_URL}/youtube/channel-videos`); 
-        console.log("here i am ",  `${BACKEND_URL}/youtube/channel-videos`)
+        const response = await axiosInstance.get(`${BACKEND_URL}/api/channel-videos`);
+        console.log("here i am ",  `${BACKEND_URL}/api/channel-videos`)
         if (response.data.success) {
           setVideos(response.data.videos);
         } else {

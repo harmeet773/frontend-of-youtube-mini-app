@@ -14,25 +14,24 @@ const CheckBackendConnectivity = ({setBackendStatus}) => {
 
   const checkBackend = async () => {
     try {
-      const res1 = await axios.get(`${BACKEND_URL_1}/serverStatus`, {
+      const res1 = await axios.get(`${BACKEND_URL_1}/api/serverStatus`, {
         timeout: 3000,
       });
-      if (res1.data === "server is running") {
+      if (res1.data?.status === "ok" || res1.data?.message === "Server is running") {
         setBackendStatus(true);
         setStatus("live");
-        //dispatch(setBackendUrl(import.meta.env.VITE_BACKEND_URL_1));
         dispatch({type:"harmeetsYoutube/setBackendUrl"  , payload : import.meta.env.VITE_BACKEND_URL_1 });
         return;
       }
     } catch (e) {console.log("error is", e);}
 
- 
-    try {
-      const res2 = await axios.get(`${BACKEND_URL_2}/serverStatus`, {
-        timeout: 3000,
-      }); 
 
-      if (res2.data === "server is running") {
+    try {
+      const res2 = await axios.get(`${BACKEND_URL_2}/api/serverStatus`, {
+        timeout: 3000,
+      });
+
+      if (res2.data?.status === "ok" || res2.data?.message === "Server is running") {
         setBackendStatus(true);
         setStatus("live");
         dispatch(setBackendUrl(import.meta.env.VITE_BACKEND_URL_2));

@@ -18,7 +18,7 @@ const user = useSelector( (state ) => state.harmeetsYoutube.user  );
     function fetchUserProfileAndUpdateInStore(){
         // fetch user detail 
         
-        axiosInstance.get(`${backend_url}/youtube/user-profile`) 
+        axiosInstance.get(`${backend_url}/api/getUserProfile`) 
 
         setUserProfile();
     }

@@ -517,7 +517,7 @@ function CommentComponent({ videoId }) {
         setLoading(true);
       }
       const response = await axiosInstance.get(
-        `${resolvedBackendUrl}/youtube/video/${videoId}/comments`
+        `${resolvedBackendUrl}/api/video/${videoId}/comments`
       );
       const commentsData = response.data.comments || response.data || [];
       setComments(commentsData.map(normalizeComment).filter(Boolean));
@@ -569,7 +569,7 @@ function CommentComponent({ videoId }) {
     requireAuth(async () => {
       try {
         setIsSubmitting(true);
-        await axiosInstance.post(`${resolvedBackendUrl}/add-comment`, {
+        await axiosInstance.post(`${resolvedBackendUrl}/api/add-comment`, {
           videoId,
           commentText: text
         });
@@ -591,7 +591,7 @@ function CommentComponent({ videoId }) {
   const handleReply = (commentId, replyText) => {
     requireAuth(async () => {
       try {
-        await axiosInstance.post(`${resolvedBackendUrl}/reply-comment`, {
+        await axiosInstance.post(`${resolvedBackendUrl}/api/reply-comment`, {
           parentId: commentId,
           replyText
         });
@@ -611,7 +611,7 @@ function CommentComponent({ videoId }) {
   const handleEdit = (commentId, newText) => {
     requireAuth(async () => {
       try {
-        await axiosInstance.post(`${resolvedBackendUrl}/edit-comment`, {
+        await axiosInstance.post(`${resolvedBackendUrl}/api/edit-comment`, {
           commentId,
           newText
         });
@@ -638,7 +638,7 @@ function CommentComponent({ videoId }) {
   const handleDelete = (commentId) => {
     requireAuth(async () => {
       try {
-        await axiosInstance.post(`${resolvedBackendUrl}/delete-comment`, {
+        await axiosInstance.post(`${resolvedBackendUrl}/api/delete-comment`, {
           commentId
         });
         setComments((prev) => removeCommentFromTree(prev, commentId));
@@ -658,11 +658,23 @@ function CommentComponent({ videoId }) {
     requireAuth(async () => {
       try {
         console.log(`Liking comment with ID: ${commentId}`);
-        const response = await axiosInstance.post(`${resolvedBackendUrl}/comment-rating`, {
+        const response = await axiosInstance.post(`${resolvedBackendUrl}/api/comment-rating`, {
           commentId,
           rating: "like"
         });
         console.log("Like response:", response.data);
+        
+        // Show a small toast or message that this is simulated
+        Swal.fire({
+          icon: "info",
+          title: "Rating Simulated",
+          text: "YouTube API does not support liking comments via third-party apps. This comment rating is only visible to you in this session.",
+          timer: 2000,
+          showConfirmButton: false,
+          toast: true,
+          position: 'bottom-end'
+        });
+
         setComments((prev) =>
           updateCommentTree(prev, commentId, (item) => ({
             ...item,
@@ -686,11 +698,23 @@ function CommentComponent({ videoId }) {
     requireAuth(async () => {
       try {
         console.log(`Disliking comment with ID: ${commentId}`);
-        const response = await axiosInstance.post(`${resolvedBackendUrl}/comment-rating`, {
+        const response = await axiosInstance.post(`${resolvedBackendUrl}/api/comment-rating`, {
           commentId,
           rating: "dislike"
         });
         console.log("Dislike response:", response.data);
+
+        // Show a small toast or message that this is simulated
+        Swal.fire({
+          icon: "info",
+          title: "Rating Simulated",
+          text: "YouTube API does not support disliking comments via third-party apps. This rating is only visible to you in this session.",
+          timer: 2000,
+          showConfirmButton: false,
+          toast: true,
+          position: 'bottom-end'
+        });
+
         setComments((prev) =>
           updateCommentTree(prev, commentId, (item) => ({
             ...item,

@@ -24,11 +24,11 @@ export default function OAuthSuccess() {
         // If profile data is available   
       }else{
         // If profile data is not available, fetch it first and then save to Redux store
-        axiosInstance.get(`${backend_url}/youtube/getUserProfile`) 
+        axiosInstance.get(`${backend_url}/api/getUserProfile`)
           .then((response) => {
             const userProfile = response.data;
-            console.log("token is" , token);  
-            console.log("url is " ,  `${backend_url}/youtube/getUserProfile` )       ;
+            console.log("token is" , token);
+            console.log("url is " ,  `${backend_url}/api/getUserProfile` )       ;
             console.log("neeed to work here with out data" , response, JSON.stringify(response));
             console.log("neeed to work here ",response.data );
             dispatch({ type: 'harmeetsYoutube/setUserProfile', payload: userProfile });

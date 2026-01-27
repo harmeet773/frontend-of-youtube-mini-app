@@ -34,7 +34,7 @@ export default function VideoComponent() {
     console.log("handleVideoRating called with rating:", rating);
     requireAuth(async () => {
       try {
-        await axiosInstance.post(`${BACKEND_URL}/video-rating`, {
+        await axiosInstance.post(`${BACKEND_URL}/api/video-rating`, {
           videoId,
           rating
         });
@@ -60,7 +60,7 @@ export default function VideoComponent() {
     const fetchVideo = async () => {
       try {
         const res = await axiosInstance.get(
-          `${BACKEND_URL}/youtube/video/${videoId}`
+          `${BACKEND_URL}/api/video/${videoId}`
         );
         setVideo(res.data.video);
       } catch (err) {
