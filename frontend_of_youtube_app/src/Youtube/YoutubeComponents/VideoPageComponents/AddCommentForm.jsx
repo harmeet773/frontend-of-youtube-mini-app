@@ -1,36 +1,70 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-function AddCommentForm({ UserProfilePhoto }) {
 
-
+function AddCommentForm({ UserProfilePhoto, onSubmit, isSubmitting }) {
   const [text, setText] = useState("");
+  const isUserAuthenticated = useSelector(
+    (state) => state.harmeetsYoutube.isUserAuthenticated
+  );
+  const handleCancel = () => setText("");
 
   function handleSubmit(e) {
-    e.preventDefault(); 
+    e.preventDefault();
 
-    if (!text.trim()) return;
-    onSubmit(text);                
-    setText("");    
+    const trimmed = text.trim();
+    if (!trimmed || !onSubmit) return;
+    onSubmit(trimmed);
+    setText("");
   }
-  const isUserAuthenticated = useSelector(state => state.harmeetsYoutube.isUserAuthenticated);
-  if (isUserAuthenticated){
-                                                    
+
+  if (!isUserAuthenticated) {
+    return null;
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="mb-3">
-      <div className="d-flex gap-2">
-        <img src={UserProfilePhoto} className="small-avatar" />     
-        <textarea
-          className="form-control"
-          rows="3"
-          placeholder="Add a public comment..."
-          value={text}
-          onChange={e => setText(e.target.value)}
-        />
+    <form onSubmit={handleSubmit} className="yt-comment-form">
+      <div className="yt-comment-form__row">
+        {UserProfilePhoto ? (
+          <img
+            src={UserProfilePhoto}
+            alt="profile"
+            className="yt-avatar yt-avatar--small"
+          />
+        ) : (
+          <div className="yt-avatar yt-avatar--small yt-avatar--placeholder">
+            U
+          </div>
+        )}
+        <div className="yt-comment-form__input">
+          <textarea
+            className="yt-textarea"
+            rows="2"
+            placeholder="Add a public comment..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            disabled={isSubmitting}
+          />
+          <div className="yt-comment-form__actions">
+            <button
+              type="button"
+              className="yt-button yt-button--ghost"
+              onClick={handleCancel}
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              className="yt-button yt-button--primary"
+              type="submit"
+              disabled={isSubmitting || !text.trim()}
+            >
+              Comment
+            </button>
+          </div>
+        </div>
       </div>
-      <button className="btn btn-primary mt-2">Comment</button>
     </form>
   );
-
-}else {return null ; }
 }
+
 export default AddCommentForm;

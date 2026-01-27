@@ -2,16 +2,57 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../api/axiosInstance";
 import { useSelector } from "react-redux";
+import Swal from "sweetalert2";
 
 export default function VideoComponent() {
   const { videoId } = useParams();
   const BACKEND_URL = useSelector(
     (state) => state.harmeetsYoutube.YT_BACKEND_URL
   );
+  const isUserAuthenticated = useSelector(
+    (state) => state.harmeetsYoutube.isUserAuthenticated
+  );
 
   const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const requireAuth = (action) => {
+    if (!isUserAuthenticated) {
+      Swal.fire({
+        icon: "warning",
+        title: "Authentication Required",
+        text: "Please login to perform this action.",
+        confirmButtonText: "OK"
+      });
+      return;
+    }
+    action();
+  };
+
+  const handleVideoRating = (rating) => {
+    console.log("handleVideoRating called with rating:", rating);
+    requireAuth(async () => {
+      try {
+        await axiosInstance.post(`${BACKEND_URL}/video-rating`, {
+          videoId,
+          rating
+        });
+        // Optionally update local state for immediate feedback
+        setVideo(prev => ({
+          ...prev,
+          statistics: {
+            ...prev.statistics,
+            likeCount: rating === 'like' 
+              ? String(Number(prev.statistics.likeCount || 0) + 1)
+              : prev.statistics.likeCount
+          }
+        }));
+      } catch (err) {
+        console.error("Error rating video:", err);
+      }
+    });
+  };
 
   useEffect(() => {
     if (!videoId || !BACKEND_URL) return;
@@ -48,6 +89,7 @@ export default function VideoComponent() {
             <iframe
               src={`https://www.youtube.com/embed/${video.id}`}
               title={snippet.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; compute-pressure"
               allowFullScreen
             />
           </div>
@@ -63,8 +105,19 @@ export default function VideoComponent() {
             </p>
 
             <div className="d-flex gap-3">
-              <span>👍 {formatNumber(statistics.likeCount)}</span>
-              <span>💬 {formatNumber(statistics.commentCount)}</span>
+              <button 
+                className="btn btn-outline-dark btn-sm rounded-pill d-flex align-items-center gap-2"
+                onClick={() => handleVideoRating('like')}
+              >
+                👍 {formatNumber(statistics.likeCount)}
+              </button>
+              <button 
+                className="btn btn-outline-dark btn-sm rounded-pill d-flex align-items-center gap-2"
+                onClick={() => handleVideoRating('dislike')}
+              >
+                👎 Dislike
+              </button>
+              <span className="d-flex align-items-center gap-2">💬 {formatNumber(statistics.commentCount)}</span>
             </div>
           </div>
 
