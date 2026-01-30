@@ -34,20 +34,30 @@ export default function VideoComponent() {
     console.log("handleVideoRating called with rating:", rating);
     requireAuth(async () => {
       try {
-        await axiosInstance.post(`${BACKEND_URL}/api/video-rating`, {
-          videoId,
-          rating
+        Swal.fire({
+          icon: "warning",
+          title: "Attention Required!",
+          text: "Please perform this action from youtube app",
+          confirmButtonText: "OK"
         });
-        // Optionally update local state for immediate feedback
-        setVideo(prev => ({
-          ...prev,
-          statistics: {
-            ...prev.statistics,
-            likeCount: rating === 'like' 
-              ? String(Number(prev.statistics.likeCount || 0) + 1)
-              : prev.statistics.likeCount
-          }
-        }));
+        /*
+         await axiosInstance.post(`${BACKEND_URL}/api/video-rating`, {
+           videoId,
+           rating
+         });
+         // Optionally update local state for immediate feedback
+
+         setVideo(prev => ({
+           ...prev,
+           statistics: {
+             ...prev.statistics,
+             likeCount: rating === 'like'
+               ? String(Number(prev.statistics.likeCount || 0) + 1)
+               : prev.statistics.likeCount
+           }
+         }));
+         */
+
       } catch (err) {
         console.error("Error rating video:", err);
       }
@@ -64,7 +74,7 @@ export default function VideoComponent() {
         );
         setVideo(res.data.video);
       } catch (err) {
-        setError("Failed to load video");
+        setError(`failed to fetch video: ${err || err.toString()}`);
       } finally {
         setLoading(false);
       }

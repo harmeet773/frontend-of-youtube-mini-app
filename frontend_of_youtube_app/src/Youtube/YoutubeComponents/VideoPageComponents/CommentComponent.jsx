@@ -207,6 +207,7 @@ function removeCommentFromTree(items, commentId) {
 function CommentThread({
   comment,
   depth = 0,
+  threadId,
   editingId,
   setEditingId,
   editingText,
@@ -225,6 +226,7 @@ function CommentThread({
   onReply
 }) {
   const commentId = comment.commentId || comment.replyId;
+  const currentThreadId = threadId || comment.commentThreadId || commentId;
   const isEditing = editingId === commentId;
   const isExpanded = expandedReplies[commentId];
   const displayName = comment.authorName || "Unknown";
@@ -258,9 +260,14 @@ function CommentThread({
       return;
     }
     requireAuth(() => {
-      onReply(commentId, replyText);
+      // YouTube only supports one level of nesting in the API (all replies belong to a thread).
+      // We pass the threadId as parentId to the API, but can prefix the text with the author name.
+      const finalReplyText = depth > 0 ? `@${displayName} ${replyText}` : replyText;
+      onReply(currentThreadId, finalReplyText);
       setReplyTexts({ ...replyTexts, [commentId]: "" });
       setReplyBox({ ...replyBox, [commentId]: false });
+      // Auto-expand replies to show the new one
+      setExpandedReplies({ ...expandedReplies, [currentThreadId]: true });
     });
   };
 
@@ -450,6 +457,7 @@ function CommentThread({
                   key={reply.replyId}
                   comment={reply}
                   depth={depth + 1}
+                  threadId={currentThreadId}
                   editingId={editingId}
                   setEditingId={setEditingId}
                   editingText={editingText}
@@ -549,6 +557,13 @@ function CommentComponent({ videoId }) {
       setSortMode("top");
       setError(null);
       fetchComments({ showLoader: true });
+
+      // Set up polling for new comments every 30 seconds
+      const intervalId = setInterval(() => {
+        fetchComments({ showLoader: false });
+      }, 30000);
+
+      return () => clearInterval(intervalId);
     }
   }, [videoId, resolvedBackendUrl]);
 
@@ -573,7 +588,10 @@ function CommentComponent({ videoId }) {
           videoId,
           commentText: text
         });
-        await fetchComments({ showLoader: false });
+        // Give YouTube API a moment to process the new comment before fetching
+        setTimeout(() => {
+          fetchComments({ showLoader: false });
+        }, 2000);
       } catch (err) {
         console.error("Error adding comment:", err);
         Swal.fire({
@@ -595,7 +613,10 @@ function CommentComponent({ videoId }) {
           parentId: commentId,
           replyText
         });
-        await fetchComments({ showLoader: false });
+        // Give YouTube API a moment to process the new reply before fetching
+        setTimeout(() => {
+          fetchComments({ showLoader: false });
+        }, 2000);
       } catch (err) {
         console.error("Error adding reply:", err);
         Swal.fire({
