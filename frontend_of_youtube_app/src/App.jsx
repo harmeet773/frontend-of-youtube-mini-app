@@ -10,8 +10,9 @@ import HarmeetsYoutube from './Youtube/HarmeetsYoutube'
 import VideoPage from './Youtube/YoutubeComponents/VideoPage'
 import CheckBackendConnectivity from './CheckBackendConnectivity'
 import RouteTracker from './components/RouteTracker';
+import About from './components/About';
 function App() {
-  const [count, setCount] = useState(0)
+
   const [BackendStatus, setBackendStatus] = useState(false);
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HarmeetsYoutube />} />
         <Route path="/video/:videoId" element={<VideoPage />} />
+        <Route path="/about" element={<About />} />
         <Route path="/auth" element={   <GoogleLogin /> } />
         <Route path="/oauth-success" element={<OAuthSuccess />} />
       </Routes>        }
