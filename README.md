@@ -10,11 +10,10 @@ This is the frontend of a YouTube-like mini-application, built with React. It pr
 - **State Management:** Uses Redux Toolkit for efficient application state handling.
 - **Connectivity Check:** Includes a backend connectivity verification component.
 
-## 🌐 Live Demo
+## 🌐 Live Demo & Backend
 
-The application is live and accessible here:  
-👉 https://youtube-mini-app-p93f.onrender.com/
-
+- 🚀 **Live App:** https://youtube-mini-app-p93f.onrender.com/  
+- 🔧 **Backend Repository:** https://github.com/harmeet773/youtube-mini-app
 ## 🛠️ Technologies Used
 
 - **Frontend Framework:** [React](https://reactjs.org/) (v19)
